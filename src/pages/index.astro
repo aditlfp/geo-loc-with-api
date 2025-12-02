@@ -1,0 +1,233 @@
+---
+// src/pages/index.astro
+const pageTitle = "Welcome - IP Geolocation Landing";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar bg-base-100 shadow-lg">
+      <div class="flex-1">
+        <a class="btn btn-ghost text-xl">🌍 GeoLocator</a>
+      </div>
+      <div class="flex-none mx-2">
+        <a href="https://github.com/aditlfp">
+          <span class="text-sm">project created by Aditlfp</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero min-h-screen bg-gradient-to-br from-primary to-secondary">
+      <div class="hero-content text-center">
+        <div class="max-w-md">
+          <h1 class="text-5xl font-bold text-white mb-8">
+            Discover Your Location
+          </h1>
+          <p class="text-lg text-white/90 mb-8">
+            Get your IP address and geolocation information instantly
+          </p>
+
+          <!-- Loading State -->
+          <div id="loading" class="flex justify-center mb-8">
+            <span class="loading loading-spinner loading-lg text-white"></span>
+          </div>
+
+          <!-- Geolocation Card -->
+          <div id="geoCard" class="card bg-base-100 shadow-xl hidden">
+            <div class="card-body">
+              <h2 class="card-title justify-center text-2xl mb-4">
+                Your Information
+              </h2>
+
+              <div class="space-y-4">
+                <div class="stat bg-base-200 rounded-lg">
+                  <div class="stat-title">IP Address</div>
+                  <div class="stat-value text-lg" id="ipAddress">-</div>
+                </div>
+
+                <div class="stat bg-base-200 rounded-lg">
+                  <div class="stat-title">Location</div>
+                  <div class="stat-value text-lg" id="location">-</div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="stat bg-base-200 rounded-lg">
+                    <div class="stat-title">Country</div>
+                    <div class="stat-value text-base" id="country">-</div>
+                  </div>
+
+                  <div class="stat bg-base-200 rounded-lg">
+                    <div class="stat-title">Region</div>
+                    <div class="stat-value text-base" id="region">-</div>
+                  </div>
+                </div>
+
+                <div class="stat bg-base-200 rounded-lg">
+                  <div class="stat-title">Timezone</div>
+                  <div class="stat-value text-lg" id="timezone">-</div>
+                </div>
+
+                <div class="stat bg-base-200 rounded-lg">
+                  <div class="stat-title">Coordinates</div>
+                  <div class="stat-value text-base" id="coordinates">-</div>
+                </div>
+              </div>
+
+              <div class="card-actions justify-center mt-6">
+                <button class="btn btn-primary" id="refreshBtn">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  Refresh
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Alert -->
+          <div id="errorAlert" class="alert alert-error hidden mt-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <span id="errorMessage">Error loading geolocation data</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="py-20 bg-base-200">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-12">Features</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body items-center text-center">
+              <div class="text-4xl mb-4">🎯</div>
+              <h3 class="card-title">Accurate Location</h3>
+              <p>Get precise geolocation data based on your IP address</p>
+            </div>
+          </div>
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body items-center text-center">
+              <div class="text-4xl mb-4">⚡</div>
+              <h3 class="card-title">Lightning Fast</h3>
+              <p>Instant results with real-time data fetching</p>
+            </div>
+          </div>
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body items-center text-center">
+              <div class="text-4xl mb-4">🔒</div>
+              <h3 class="card-title">Secure & Private</h3>
+              <p>Your data is safe and never stored on our servers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-300 text-base-content">
+      <aside>
+        <p class="font-bold text-lg">GeoLocator</p>
+        <p>IP Geolocation Service https://www.geojs.io © 2025</p>
+      </aside>
+    </footer>
+  </body>
+</html>
+
+<script>
+  // Replace with your actual API endpoint
+  const API_URL = import.meta.env.PUBLIC_BASE_API_URL;
+
+  async function fetchGeolocation() {
+    const loading = document.getElementById("loading");
+    const geoCard = document.getElementById("geoCard");
+    const errorAlert = document.getElementById("errorAlert");
+
+    try {
+      loading?.classList.remove("hidden");
+      geoCard?.classList.add("hidden");
+      errorAlert?.classList.add("hidden");
+
+      const base = API_URL.replace(/\/$/, "");
+
+      const resIP = await fetch(`${base}/v1/ip.json`);
+      if (!resIP.ok) throw new Error(`IP fetch error: ${resIP.status}`);
+
+      const data = await resIP.json();
+      if (!data?.ip) throw new Error("API returned no IP value");
+
+      const resGeo = await fetch(`${base}/v1/ip/geo/${data.ip}.json`);
+      if (!resGeo.ok) throw new Error(`Geo fetch error: ${resGeo.status}`);
+
+      const dataLoc = await resGeo.json();
+
+      const ipEl = document.getElementById("ipAddress");
+      const locationEl = document.getElementById("location");
+      const countryEl = document.getElementById("country");
+      const regionEl = document.getElementById("region");
+      const timezoneEl = document.getElementById("timezone");
+      const coordsEl = document.getElementById("coordinates");
+
+      if (ipEl) ipEl.textContent = data.ip || "N/A";
+      if (locationEl) locationEl.textContent = dataLoc.city || "N/A";
+      if (countryEl) countryEl.textContent = dataLoc.country || "N/A";
+      if (regionEl) regionEl.textContent = dataLoc.country_code || "N/A";
+      if (timezoneEl) timezoneEl.textContent = dataLoc.timezone || "N/A";
+      if (coordsEl) {
+        coordsEl.textContent =
+          dataLoc.latitude && dataLoc.longitude
+            ? `${dataLoc.latitude}, ${dataLoc.longitude}`
+            : "N/A";
+      }
+
+      loading?.classList.add("hidden");
+      geoCard?.classList.remove("hidden");
+    } catch (error) {
+      console.error("Error fetching geolocation:", error);
+      loading?.classList.add("hidden");
+      errorAlert?.classList.remove("hidden");
+      const errorMsg = document.getElementById("errorMessage");
+      if (errorMsg) {
+        errorMsg.textContent =
+          "Failed to load geolocation data. Please try again.";
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchGeolocation();
+
+    const refreshBtn = document.getElementById("refreshBtn");
+    refreshBtn?.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      fetchGeolocation();
+    });
+  });
+</script>
